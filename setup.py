@@ -7,8 +7,8 @@ from setuptools import find_packages, setup
 
 NAME = 'thrift2pyi'
 DESCRIPTION = 'convert thrift to pyi'
-EMAIL = 'nhywieza@gmail.com'
-AUTHOR = 'nhywieza'
+EMAIL = 'yannweizhi@bytedance.com'
+AUTHOR = 'yannweizhi'
 
 REQUIRES = [
     'six>=1.11.0,<2.0.0',
