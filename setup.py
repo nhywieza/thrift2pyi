@@ -7,8 +7,9 @@ from setuptools import find_packages, setup
 
 NAME = 'thrift2pyi'
 DESCRIPTION = 'convert thrift to pyi'
-EMAIL = 'yannweizhi@bytedance.com'
-AUTHOR = 'yannweizhi'
+EMAIL = 'yanweizhi@bytedance.com'
+AUTHOR = 'yanweizhi'
+URL = "https://github.com/nhywieza/thrift2pyi"
 
 REQUIRES = [
     'six>=1.11.0,<2.0.0',
@@ -44,6 +45,7 @@ setup(
     long_description_content_type='text/markdown',
     author=AUTHOR,
     author_email=EMAIL,
+    url=URL,
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
