@@ -28,8 +28,13 @@ enum ExampleEnum {
     C = 2
 }
 
+exception ByteException {
+    1: i32 ErrorCode = 0,
+}
+
 service ExampleService {
     Example Get(1: base.Base rq, 2: i64 xx)
-    i16 Pull(1: string name = "", 2: map<string,string> xxx)
+    i16 Pull(1: string name = "", 2: map<string,string> xxx) throws (1: ByteException exc)
     void Test()
 }
+
