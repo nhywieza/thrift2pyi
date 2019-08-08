@@ -1,5 +1,5 @@
 # coding:utf-8
-from typing import Dict, List, Set
+from typing import Set, List, Dict
 from base import _Thrift2Pyi_Base
 from enum import Enum
 
