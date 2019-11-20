@@ -2,6 +2,7 @@
 from typing import Dict
 
 
+# noinspection PyPep8Naming, PyShadowingNames
 class E(object):
     A: bool
     B: str
@@ -13,6 +14,7 @@ class E(object):
 _Thrift2Pyi_E = E
 
 
+# noinspection PyPep8Naming, PyShadowingNames
 class A(object):
     A: str
     B: str
