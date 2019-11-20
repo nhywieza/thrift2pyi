@@ -13,7 +13,7 @@ class E(object):
 _Thrift2Pyi_E = E
 
 
-class Base(object):
+class A(object):
     A: str
     B: str
     C: str
@@ -31,4 +31,4 @@ class Base(object):
         ...
 
 
-_Thrift2Pyi_Base = Base
+_Thrift2Pyi_A = A

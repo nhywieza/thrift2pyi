@@ -10,24 +10,18 @@ import os
 from collections import defaultdict
 
 import sys
-
-from six import u, string_types, PY2
 from pypeg2 import compose
 from thriftpy2 import load
 from thriftpy2.thrift import TType
 from yapf.yapflib.yapf_api import FormatCode
 
 from thrift2pyi.peg import PYI, Struct, Init, Parameter, Annotations, Parameters, Annotation, Structs, \
-    Imports, Services, Modules, Import, Service, Methods, Method, Enums, KeyValue, KeyValues, Enum, Exceptions, Exc, \
-    Unions, Union, Consts, Const
+    Imports, Services, Modules, Import, Service, Methods, Method, Enums, KeyValue, KeyValues, Enum
 
 
 class Thrift2pyi(object):
     def __init__(self, filename):
-        if PY2:
-            self.thrift = load(filename.encode("utf-8"))
-        else:
-            self.thrift = load(filename)
+        self.thrift = load(filename)
         if not hasattr(self.thrift, "__thrift_meta__"):
             sys.exit(0)
         self.meta = self.thrift.__thrift_meta__
@@ -36,10 +30,7 @@ class Thrift2pyi(object):
         self.pyi.imports = Imports()
         self.pyi.services = Services()
         self.pyi.structs = Structs()
-        self.pyi.unions = Unions()
         self.pyi.enums = Enums()
-        self.pyi.exceptions = Exceptions()
-        self.pyi.consts = Consts()
         self.filename = filename
 
         self._imports = defaultdict(set)
@@ -61,11 +52,10 @@ class Thrift2pyi(object):
         else:
             thrift_type, nest = args
             if thrift_type == TType.STRUCT:
-                # (12, 'I', <class 'base.Base'>, False)
-                if u(nest.__module__) in self._module2file:
-                    name = u(nest.__module__)
-                    self._imports[self._module2file[name]].add("_Thrift2Pyi_" + u(nest.__name__))
-                return "_Thrift2Pyi_" + u(nest.__name__)
+                if nest.__module__ in self._module2file:
+                    name = nest.__module__
+                    self._imports[name].add("_Thrift2Pyi_" + nest.__name__)
+                return "_Thrift2Pyi_" + nest.__name__
             elif thrift_type == TType.LIST:
                 self._imports["typing"].add("List")
                 return "List[%s]" % self._get_type(nest)
@@ -76,7 +66,7 @@ class Thrift2pyi(object):
                 self._imports["typing"].add("Set")
                 return "Set[%s]" % self._get_type(nest)
             elif thrift_type == TType.I32:
-                return u(nest.__name__)
+                return nest.__name__
             else:
                 raise Exception("do not type support %s" % thrift_type)
 
@@ -95,12 +85,12 @@ class Thrift2pyi(object):
             return "None"
         elif isinstance(v, int) or isinstance(v, float) or isinstance(v, list) or isinstance(v, dict):
             return str(v)
-        elif isinstance(v, string_types):
+        elif isinstance(v, str):
             return "'%s'" % v
         else:
             raise Exception("%s do not support" % v)
 
-    def _spec2params(self, default_spec, thrift_spec):
+    def _spec2params(self, default_spec, thrift_spec) -> (Parameters, Annotations):
         default_dict = {}
         for k, v in default_spec:
             p_param = Parameter()
@@ -125,7 +115,7 @@ class Thrift2pyi(object):
 
     def _struct2pyi(self, struct):
         p_struct = Struct()
-        p_struct.name = u(struct.__name__)
+        p_struct.name = struct.__name__
         p_init = Init()
         p_init.params, p_struct.annotations = self._spec2params(struct.default_spec, struct.thrift_spec)
         p_struct.init = p_init
@@ -135,25 +125,13 @@ class Thrift2pyi(object):
         for struct in self.meta["structs"]:
             self.pyi.structs.append(self._struct2pyi(struct))
 
-    def _union2pyi(self, union):
-        p_union = Union()
-        p_union.name = u(union.__name__)
-        p_init = Init()
-        p_init.params, p_union.annotations = self._spec2params(union.default_spec, union.thrift_spec)
-        p_union.init = p_init
-        return p_union
-
-    def _unions2pyi(self):
-        for union in self.meta["unions"]:
-            self.pyi.unions.append(self._union2pyi(union))
-
     def _scan_includes(self):
         for include in self.meta["includes"]:
             thrift_file = include.__thrift_file__
-            module = thrift_file.split(os.sep)[-1].split(".")[0]
-            name = os.path.relpath(include.__thrift_file__, self.thrift.__thrift_file__)
-            self._module2file[module] = name.replace(".." + os.sep, ".").replace(os.sep, "."). \
-                replace(".thrift", "_thrift")
+            module = thrift_file.split("/")[-1].split(".")[0]
+            name = include.__thrift_file__.replace(".thrift", "_thrift")
+            name = name.replace("/", ".")
+            self._module2file[module] = name
 
             if not os.path.exists(name):
                 Thrift2pyi(include.__thrift_file__).output()
@@ -169,7 +147,7 @@ class Thrift2pyi(object):
 
     def _service2pyi(self, service):
         p_service = Service()
-        p_service.name = u(service.__name__)
+        p_service.name = service.__name__
         p_methods = Methods()
         for method in service.thrift_services:
             p_method = Method()
@@ -195,12 +173,12 @@ class Thrift2pyi(object):
 
         for k, v in enum._NAMES_TO_VALUES.items():
             p_kv = KeyValue()
-            p_kv.name = u(k)
+            p_kv.name = k
             p_kv.value = self._2v(v)
             p_kvs.append(p_kv)
 
         p_enum = Enum()
-        p_enum.name = u(enum.__name__)
+        p_enum.name = enum.__name__
         p_enum.kvs = p_kvs
 
         return p_enum
@@ -209,55 +187,18 @@ class Thrift2pyi(object):
         for enum in self.meta["enums"]:
             self.pyi.enums.append(self._enum2pyi(enum))
 
-    def _exc2pyi(self, exc):
-        p_exc = Exc()
-        p_exc.name = u(exc.__name__)
-        p_init = Init()
-        p_init.params, p_exc.annotations = self._spec2params(exc.default_spec, exc.thrift_spec)
-        p_exc.init = p_init
-        return p_exc
-
-    def _excs2pyi(self):
-        if not self.meta["exceptions"]:
-            return
-
-        self._imports["thriftpy2.thrift"].add("TException")
-        for exc in self.meta["exceptions"]:
-            self.pyi.exceptions.append(self._exc2pyi(exc))
-
-    def _consts2pyi(self):
-        for k, v in self.thrift.__dict__.items():
-            # 私有成员跳过
-            if k.startswith("__"):
-                continue
-            kv = Const()
-            kv.name = u(k)
-            try:
-                kv.value = self._2v(v)
-                self.pyi.consts.append(kv)
-            except:
-                continue
-
     def _thrift2pyi(self):
-        self._consts2pyi()
         self._scan_includes()
         self._structs2pyi()
-        self._unions2pyi()
-        self._excs2pyi()
         self._services2pyi()
         self._enums2pyi()
         self._includes2pyi()
 
     def output(self):
         self._thrift2pyi()
-        try:
-            o = FormatCode(compose(self.pyi))[0]
-        except:
-            o = compose(self.pyi)
-            print("format failed")
-
+        o = FormatCode(compose(self.pyi))
         with open("%s.pyi" % self.filename.replace(".thrift", "_thrift"), "w") as f:
-            f.write(o)
+            f.write(o[0])
 
 
 if __name__ == "__main__":

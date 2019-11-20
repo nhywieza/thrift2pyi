@@ -1,11 +1,12 @@
-namespace py base
+namespace py a
+
 
 struct E {
     1: bool A = false,
     2: string B = "",
 }
 
-struct Base {
+struct A {
     1: string A = "",
     2: string B = "",
     3: string C = "",

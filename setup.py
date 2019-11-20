@@ -9,7 +9,6 @@ NAME = 'thrift2pyi'
 DESCRIPTION = 'convert thrift to pyi'
 EMAIL = 'yanweizhi@bytedance.com'
 AUTHOR = 'yanweizhi'
-URL = "https://github.com/nhywieza/thrift2pyi"
 
 REQUIRES = [
     'six>=1.11.0,<2.0.0',
@@ -34,7 +33,7 @@ except IOError:
     long_description = DESCRIPTION
 
 about = {}
-with io.open(os.path.join(here, NAME, '__version__.py')) as f:
+with io.open(os.path.join(here, NAME, '__version__.py'), encoding='utf-8') as f:
     exec(f.read(), about)
 
 setup(
@@ -45,7 +44,6 @@ setup(
     long_description_content_type='text/markdown',
     author=AUTHOR,
     author_email=EMAIL,
-    url=URL,
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers

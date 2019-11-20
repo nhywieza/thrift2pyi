@@ -5,6 +5,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from .__version__ import __version__  # NOQA
+from thrift2pyi.main import main
 
-__author__ = 'yanweizhi <yanweizhi@bytedance.com>'
+if __name__ == "__main__":
+    main()

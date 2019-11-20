@@ -7,4 +7,4 @@ from __future__ import unicode_literals
 
 from .__version__ import __version__  # NOQA
 
-__author__ = 'yanweizhi <yanweizhi@bytedance.com>'
+__author__ = 'yanweizhi <yannweizhi@bytedance.com>'

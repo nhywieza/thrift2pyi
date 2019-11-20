@@ -1,6 +1,6 @@
 # coding:utf-8
-from typing import Dict, List, Set
-from base import _Thrift2Pyi_Base
+from typing import Set, Dict, List
+from a import _Thrift2Pyi_A
 from enum import Enum
 
 
@@ -10,8 +10,16 @@ class ExampleEnum(Enum):
     C = 2
 
 
+class ErrCode(Enum):
+    ERR_SUCCESS = 0
+    ERR_REQ_PARAM_INVALID = 4000
+    ERR_UNKNOWN = 5000
+    ERR_SYSTEM_INNER_EXCEPTION = 5001
+    ERR_LIMIT_EXCEEDED = 5002
+
+
 class Example(object):
-    A: Dict[Dict[_Thrift2Pyi_Base, _Thrift2Pyi_Base], _Thrift2Pyi_Base]
+    A: Dict[Dict[_Thrift2Pyi_A, _Thrift2Pyi_A], _Thrift2Pyi_A]
     B: int
     C: int
     D: int
@@ -19,36 +27,29 @@ class Example(object):
     F: int
     G: float
     H: str
-    I: _Thrift2Pyi_Base
-    J: Dict[_Thrift2Pyi_Base, Dict[_Thrift2Pyi_Base, _Thrift2Pyi_Base]]
-    K: Dict[_Thrift2Pyi_Base, _Thrift2Pyi_Base]
+    I: _Thrift2Pyi_A
+    J: Dict[_Thrift2Pyi_A, Dict[_Thrift2Pyi_A, _Thrift2Pyi_A]]
+    K: Dict[_Thrift2Pyi_A, _Thrift2Pyi_A]
     L: Dict[str, bool]
-    M: Dict[str, List[Dict[str, _Thrift2Pyi_Base]]]
-    N: List[_Thrift2Pyi_Base]
+    M: Dict[str, List[Dict[str, _Thrift2Pyi_A]]]
+    N: List[_Thrift2Pyi_A]
     O: List[str]
     P: Set[int]
-    Q: List[Dict[str, _Thrift2Pyi_Base]]
+    Q: List[Dict[str, _Thrift2Pyi_A]]
 
-    def __init__(self,
-                 A: Dict[Dict[_Thrift2Pyi_Base, _Thrift2Pyi_Base],
-                         _Thrift2Pyi_Base] = None,
-                 B: int = 2,
-                 C: int = None,
-                 D: int = None,
-                 E: bool = True,
-                 F: int = None,
-                 G: float = 0.1,
-                 H: str = 'hello',
-                 I: _Thrift2Pyi_Base = None,
-                 J: Dict[_Thrift2Pyi_Base, Dict[_Thrift2Pyi_Base,
-                                                _Thrift2Pyi_Base]] = None,
-                 K: Dict[_Thrift2Pyi_Base, _Thrift2Pyi_Base] = None,
-                 L: Dict[str, bool] = None,
-                 M: Dict[str, List[Dict[str, _Thrift2Pyi_Base]]] = None,
-                 N: List[_Thrift2Pyi_Base] = None,
-                 O: List[str] = None,
-                 P: Set[int] = None,
-                 Q: List[Dict[str, _Thrift2Pyi_Base]] = None) -> None:
+    def __init__(
+            self,
+            A: Dict[Dict[_Thrift2Pyi_A, _Thrift2Pyi_A], _Thrift2Pyi_A] = None,
+            B: int = None,
+            C: int = None,
+            D: int = None,
+            E: bool = True,
+            F: int = None,
+            G: float = 0.1,
+            H: str = 'hello',
+            I: _Thrift2Pyi_A = None,
+            J: Dict[_Thrift2Pyi_A, Dict[_Thrift2Pyi_A, _Thrift2Pyi_A]] = None,
+            K: Dict[_Thrift2Pyi_A, _Thrift2Pyi_A] = None) -> None:
         ...
 
 
@@ -56,7 +57,7 @@ _Thrift2Pyi_Example = Example
 
 
 class ExampleService(object):
-    def Get(self, rq: _Thrift2Pyi_Base = None,
+    def Get(self, rq: _Thrift2Pyi_A = None,
             xx: int = None) -> _Thrift2Pyi_Example:
         ...
 

@@ -3,3 +3,6 @@ __pycache__/
 /.mypy_cache/
 /gen-py/
 *.pyc
+/gen-py
+/thrift2pyi.egg-info
+/dist
