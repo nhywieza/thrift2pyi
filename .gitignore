@@ -6,3 +6,4 @@ __pycache__/
 /gen-py
 /thrift2pyi.egg-info
 /dist
+/build
