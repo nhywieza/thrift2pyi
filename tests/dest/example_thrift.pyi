@@ -1,5 +1,5 @@
 # coding:utf-8
-from typing import Dict, List, Set
+from typing import Set, List, Dict
 from .a.a_thrift import _Thrift2Pyi_A
 from thriftpy2.thrift import TException
 from enum import Enum
