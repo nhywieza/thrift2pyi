@@ -6,7 +6,7 @@ pip install thrift2pyi
 
 thrift2pyi tests/example.thrift
 
-thrift2pyi tests/src/example.thrift  -s tests/src -o tests/dest
+thrift2pyi tests/src/example.thrift  -p tests/src -o tests/dest
 
 See dir "tests" for details. 
 
