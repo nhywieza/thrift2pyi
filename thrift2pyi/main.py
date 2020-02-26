@@ -13,6 +13,8 @@ from thrift2pyi.convert import Thrift2pyi
 def main():
     parser = argparse.ArgumentParser(description='convert thrift to pyi')
     parser.add_argument("thrifts", type=str, nargs="+")
+    parser.add_argument('-s', '--src', type=str)
+    parser.add_argument('-o', '--out', type=str)
     args = parser.parse_args()
     for thrift in args.thrifts:
-        Thrift2pyi(thrift).output()
+        Thrift2pyi(thrift, args.src, args.out).output()

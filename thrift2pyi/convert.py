@@ -6,6 +6,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import shutil
 
 from collections import defaultdict
 
@@ -23,7 +24,7 @@ from thrift2pyi.peg import PYI, Struct, Init, Parameter, Annotations, Parameters
 
 
 class Thrift2pyi(object):
-    def __init__(self, filename):
+    def __init__(self, filename, src, out):
         if PY2:
             self.thrift = load(filename.encode("utf-8"))
         else:
@@ -41,6 +42,8 @@ class Thrift2pyi(object):
         self.pyi.exceptions = Exceptions()
         self.pyi.consts = Consts()
         self.filename = filename
+        self.src = src
+        self.out = out
 
         self._imports = defaultdict(set)
         self._module2file = {}
@@ -156,7 +159,7 @@ class Thrift2pyi(object):
                 replace(".thrift", "_thrift")
 
             if not os.path.exists(name):
-                Thrift2pyi(include.__thrift_file__).output()
+                Thrift2pyi(include.__thrift_file__, self.src, self.out).output()
 
     def _includes2pyi(self):
         p_imports = self.pyi.imports
@@ -256,7 +259,22 @@ class Thrift2pyi(object):
             o = compose(self.pyi)
             print("format failed")
 
-        with open("%s.pyi" % self.filename.replace(".thrift", "_thrift"), "w") as f:
+        if not self.out or self.src == self.out:
+            with open("%s.pyi" % self.filename.replace(".thrift", "_thrift"), "w") as f:
+                f.write(o)
+            return
+
+        filename = self.filename.replace(self.src, self.out)
+        dirname = os.path.dirname(filename)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname, mode=0o755, exist_ok=True)
+
+        with open("%s/__init__.py" % dirname, "w") as f:
+            pass
+
+        shutil.copyfile(self.filename, filename)
+
+        with open("%s.pyi" % filename.replace(".thrift", "_thrift"), "w") as f:
             f.write(o)
 
 
