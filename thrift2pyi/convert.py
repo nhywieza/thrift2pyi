@@ -18,9 +18,10 @@ from thriftpy2 import load
 from thriftpy2.thrift import TType
 from yapf.yapflib.yapf_api import FormatCode
 
+from thrift2pyi.exceptions import Thrift2pyiException
 from thrift2pyi.peg import PYI, Struct, Init, Parameter, Annotations, Parameters, Annotation, Structs, \
-    Imports, Services, Modules, Import, Service, Methods, Method, Enums, KeyValue, KeyValues, Enum, Exceptions, Exc, \
-    Unions, Union, Consts, Const
+    Imports, Services, Modules, Service, Methods, Method, Enums, KeyValue, KeyValues, Enum, Exceptions, Exc, \
+    Unions, Union, Consts, Const, FromImport, Module, ModuleAlias
 
 
 class Thrift2pyi(object):
@@ -46,7 +47,7 @@ class Thrift2pyi(object):
         self.out = out
 
         self._imports = defaultdict(set)
-        self._module2file = {}
+        self._module2package = {}
 
     def _get_type(self, args):
         if not isinstance(args, tuple):
@@ -60,15 +61,17 @@ class Thrift2pyi(object):
             elif thrift_type in [TType.DOUBLE]:
                 return "float"
             else:
-                raise Exception("do not type support %s" % thrift_type)
+                raise Thrift2pyiException("do not type support %s" % thrift_type)
         else:
             thrift_type, nest = args
             if thrift_type == TType.STRUCT:
                 # (12, 'I', <class 'base.Base'>, False)
-                if u(nest.__module__) in self._module2file:
-                    name = u(nest.__module__)
-                    self._imports[self._module2file[name]].add("_Thrift2Pyi_" + u(nest.__name__))
-                return "_Thrift2Pyi_" + u(nest.__name__)
+                if nest.__module__ == self.thrift.__name__:
+                    return nest.__name__
+                else:
+                    module = nest.__module__
+                    self._imports[self._module2package[module]].add(("%s_thrift" % module, module))
+                    return "%s.%s" % (module, nest.__name__)
             elif thrift_type == TType.LIST:
                 self._imports["typing"].add("List")
                 return "List[%s]" % self._get_type(nest)
@@ -81,7 +84,7 @@ class Thrift2pyi(object):
             elif thrift_type == TType.I32:
                 return u(nest.__name__)
             else:
-                raise Exception("do not type support %s" % thrift_type)
+                raise Thrift2pyiException("do not type support %s" % thrift_type)
 
     def _spec2type(self, spec):
         if len(spec) == 3:
@@ -89,7 +92,7 @@ class Thrift2pyi(object):
         elif len(spec) == 4:
             return self._get_type((spec[0], spec[2]))
         else:
-            raise Exception("invalid spec, length is %d" % len(spec))
+            raise Thrift2pyiException("invalid spec, length is %d" % len(spec))
 
     def _2v(self, v):
         if v == "":
@@ -101,7 +104,7 @@ class Thrift2pyi(object):
         elif isinstance(v, string_types):
             return "'%s'" % v
         else:
-            raise Exception("%s do not support" % v)
+            raise Thrift2pyiException("%s do not support" % v)
 
     def _spec2params(self, default_spec, thrift_spec):
         default_dict = {}
@@ -154,20 +157,27 @@ class Thrift2pyi(object):
         for include in self.meta["includes"]:
             thrift_file = include.__thrift_file__
             module = thrift_file.split(os.sep)[-1].split(".")[0]
-            name = os.path.relpath(include.__thrift_file__, self.thrift.__thrift_file__)
-            self._module2file[module] = name.replace(".." + os.sep, ".").replace(os.sep, "."). \
-                replace(".thrift", "_thrift")
+            rel_path = os.path.relpath(include.__thrift_file__, os.path.dirname(self.thrift.__thrift_file__))
+            rel_dir = os.path.dirname(rel_path)
+            self._module2package[module] = "." + rel_dir.replace(".." + os.sep, "..").replace("." + os.sep, ".")
 
-            if not os.path.exists(name):
+            if not os.path.exists(rel_path):
                 Thrift2pyi(include.__thrift_file__, self.prefix, self.out).output()
 
     def _includes2pyi(self):
         p_imports = self.pyi.imports
         for k, v in self._imports.items():
             if k not in p_imports:
-                p_imports[k] = Import()
+                p_imports[k] = FromImport()
             p_modules = Modules()
-            p_modules.extend(v)
+            for v_ in v:
+                m = Module()
+                name, alias = (v_, '') if isinstance(v_, str) else (v_[0], v_[1])
+                m.name = name
+                a = ModuleAlias()
+                a.alias = alias
+                m.module_alias = a
+                p_modules.append(m)
             p_imports[k].modules = p_modules
 
     def _service2pyi(self, service):
@@ -238,7 +248,7 @@ class Thrift2pyi(object):
             try:
                 kv.value = self._2v(v)
                 self.pyi.consts.append(kv)
-            except:
+            except Thrift2pyiException:
                 continue
 
     def _thrift2pyi(self):
@@ -283,4 +293,4 @@ class Thrift2pyi(object):
 
 
 if __name__ == "__main__":
-    Thrift2pyi("tests/example.thrift").output()
+    Thrift2pyi("../tests/example.thrift", prefix="", out="").output()

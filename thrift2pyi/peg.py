@@ -12,6 +12,9 @@ from pypeg2 import blank, name, attr, Namespace, maybe_some, endl, List, optiona
 Type = re.compile(r"[\w.\[\]]")
 Value = re.compile(r"[\w\-'.\"\{\}]*")
 
+Identifier = re.compile(r"[A-Za-z_][\w._]*")
+Package = re.compile(r"[A-Za-z_.][\w._]*")
+
 cls = "# noinspection PyPep8Naming, PyShadowingNames", endl, "class "
 
 
@@ -36,8 +39,7 @@ class Init(object):
 
 
 class Struct(object):
-    grammar = cls, name(), "(object):", endl, attr("annotations", Annotations), attr("init", Init), endl, \
-              "_Thrift2Pyi_", name(), "=", name(), endl
+    grammar = cls, name(), "(object):", endl, attr("annotations", Annotations), attr("init", Init), endl
 
 
 class Structs(List):
@@ -45,8 +47,7 @@ class Structs(List):
 
 
 class Union(object):
-    grammar = cls, name(), "(object):", endl, attr("annotations", Annotations), attr("init", Init), endl, \
-              "_Thrift2Pyi_", name(), "=", name(), endl
+    grammar = cls, name(), "(object):", endl, attr("annotations", Annotations), attr("init", Init), endl
 
 
 class Unions(List):
@@ -54,8 +55,7 @@ class Unions(List):
 
 
 class Exc(object):
-    grammar = cls, name(), "(TException):", endl, attr("annotations", Annotations), attr("init", Init), endl, \
-              "_Thrift2Pyi_", name(), "=", name(), endl
+    grammar = cls, name(), "(TException):", endl, attr("annotations", Annotations), attr("init", Init), endl
 
 
 class Exceptions(List):
@@ -79,17 +79,25 @@ class Services(List):
     grammar = maybe_some(Service)
 
 
+class ModuleAlias(object):
+    grammar = optional(blank, 'as', blank, attr("alias", Identifier))
+
+
+class Module(object):
+    grammar = attr("name", Identifier), attr("module_alias", ModuleAlias)
+
+
 class Modules(List):
-    grammar = optional(csl(re.compile(r"[\w_*]+")))
+    grammar = optional(csl(Module))
 
 
-class Import(object):
-    grammar = "from", blank, attr("name", re.compile(r"[\w.]*")), blank, "import", \
+class FromImport(object):
+    grammar = "from", blank, attr("name", Package), blank, "import", \
               blank, attr("modules", Modules), endl
 
 
 class Imports(Namespace):
-    grammar = maybe_some(Import)
+    grammar = maybe_some(FromImport)
 
 
 class KeyValue(object):
