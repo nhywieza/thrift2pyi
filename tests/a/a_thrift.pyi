@@ -11,16 +11,13 @@ class E(object):
         ...
 
 
-_Thrift2Pyi_E = E
-
-
 # noinspection PyPep8Naming, PyShadowingNames
 class A(object):
     A: str
     B: str
     C: str
     D: str
-    E: _Thrift2Pyi_E
+    E: E
     F: Dict[str, str]
 
     def __init__(self,
@@ -28,9 +25,6 @@ class A(object):
                  B: str = '',
                  C: str = '',
                  D: str = '',
-                 E: _Thrift2Pyi_E = None,
+                 E: E = None,
                  F: Dict[str, str] = None) -> None:
         ...
-
-
-_Thrift2Pyi_A = A
