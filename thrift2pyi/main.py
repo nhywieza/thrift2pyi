@@ -15,6 +15,7 @@ def main():
     parser.add_argument("thrifts", type=str, nargs="+")
     parser.add_argument('-p', '--prefix', type=str)
     parser.add_argument('-o', '--out', type=str)
+    parser.add_argument('-i', '--idl_path', type=str)
     args = parser.parse_args()
     for thrift in args.thrifts:
         Thrift2pyi(thrift, args.prefix, args.out).output()
