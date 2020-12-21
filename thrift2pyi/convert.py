@@ -25,10 +25,10 @@ from thrift2pyi.peg import PYI, Struct, Init, Parameter, Annotations, Parameters
 
 
 class Thrift2pyi(object):
-    def __init__(self, filename, prefix, out, idl_path=None):
+    def __init__(self, filename, prefix, out, include_dir=None):
         if PY2:
             filename = filename.encode("utf-8")
-        self.thrift = load(filename, idl_path=idl_path)
+        self.thrift = load(filename, include_dir=include_dir)
         if not hasattr(self.thrift, "__thrift_meta__"):
             sys.exit(0)
         self.meta = self.thrift.__thrift_meta__
