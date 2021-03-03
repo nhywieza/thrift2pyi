@@ -1,5 +1,5 @@
 # coding:utf-8
-from typing import List, Set, Dict
+from typing import Dict, Set, List
 from .a import a_thrift as a
 from thriftpy2.thrift import TException
 from enum import Enum
@@ -66,6 +66,14 @@ class Example(object):
                  O: List[str] = None,
                  P: Set[int] = None,
                  Q: List[Dict[str, a.A]] = None) -> None:
+        ...
+
+
+# noinspection PyPep8Naming, PyShadowingNames
+class ExampleUnion(object):
+    A: int
+
+    def __init__(self, A: int = 1) -> None:
         ...
 
 
