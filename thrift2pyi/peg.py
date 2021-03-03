@@ -51,7 +51,7 @@ class Union(object):
 
 
 class Unions(List):
-    grammar = maybe_some(Struct)
+    grammar = maybe_some(Union)
 
 
 class Exc(object):
@@ -126,5 +126,5 @@ class Enums(List):
 
 class PYI(object):
     grammar = "# coding:utf-8", endl, attr("imports", Imports), endl, attr("consts", Consts), \
-              attr("enums", Enums), endl, attr("structs", Structs), endl, attr("exceptions", Exceptions), \
-              endl, attr("services", Services)
+              attr("enums", Enums), endl, attr("structs", Structs), endl, attr("unions", Unions), endl, attr(
+        "exceptions", Exceptions), endl, attr("services", Services)
