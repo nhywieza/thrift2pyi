@@ -60,6 +60,8 @@ class Thrift2pyi(object):
                 return "str"
             elif thrift_type in [TType.DOUBLE]:
                 return "float"
+            elif thrift_type in [TType.BINARY]:
+                return "bytes"
             else:
                 raise Thrift2pyiException("do not type support %s" % thrift_type)
         else:
