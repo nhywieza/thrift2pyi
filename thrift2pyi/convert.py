@@ -81,6 +81,8 @@ class Thrift2pyi(object):
             elif thrift_type == TType.SET:
                 self._imports["typing"].add("Set")
                 return "Set[%s]" % self._get_type(nest)
+            elif thrift_type in [TType.BINARY]:
+                return "bytes"
             elif thrift_type == TType.I32:
                 return u(nest.__name__)
             else:
@@ -293,4 +295,4 @@ class Thrift2pyi(object):
 
 
 if __name__ == "__main__":
-    Thrift2pyi("../tests/example.thrift", prefix="", out="").output()
+    Thrift2pyi("./tests/example.thrift", prefix="", out="").output()

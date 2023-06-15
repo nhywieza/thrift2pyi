@@ -87,6 +87,7 @@ class ByteException(TException):
 
 # noinspection PyPep8Naming, PyShadowingNames
 class ExampleService(object):
+
     def Get(self, rq: a.A = None, xx: int = None) -> Example:
         ...
 
