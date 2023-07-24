@@ -60,6 +60,8 @@ class Thrift2pyi(object):
                 return "str"
             elif thrift_type in [TType.DOUBLE]:
                 return "float"
+            elif thrift_type in [TType.BINARY]:
+                return "bytes"
             else:
                 raise Thrift2pyiException("do not type support %s" % thrift_type)
         else:
@@ -81,8 +83,6 @@ class Thrift2pyi(object):
             elif thrift_type == TType.SET:
                 self._imports["typing"].add("Set")
                 return "Set[%s]" % self._get_type(nest)
-            elif thrift_type in [TType.BINARY]:
-                return "bytes"
             elif thrift_type == TType.I32:
                 return u(nest.__name__)
             else:

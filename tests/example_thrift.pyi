@@ -1,5 +1,5 @@
 # coding:utf-8
-from typing import Dict, Set, List
+from typing import Dict, List, Set
 from .a import a_thrift as a
 from thriftpy2.thrift import TException
 from enum import Enum
@@ -47,6 +47,7 @@ class Example(object):
     O: List[str]
     P: Set[int]
     Q: List[Dict[str, a.A]]
+    S: bytes
 
     def __init__(self,
                  A: Dict[Dict[a.A, a.A], a.A] = None,
@@ -65,7 +66,8 @@ class Example(object):
                  N: List[a.A] = None,
                  O: List[str] = None,
                  P: Set[int] = None,
-                 Q: List[Dict[str, a.A]] = None) -> None:
+                 Q: List[Dict[str, a.A]] = None,
+                 S: bytes = None) -> None:
         ...
 
 

@@ -42,6 +42,7 @@ struct Example {
     15: list<string> O
     16: set<i16> P
     17: list<map<string, a.A>> Q
+    18: binary R
 }
 
 enum ExampleEnum {
