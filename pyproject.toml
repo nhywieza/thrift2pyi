@@ -1,0 +1,22 @@
+[project]
+name = "thrift2pyi"
+version = "1.0.5"
+authors = [
+  { name="yanweizhi", email="yanweizhi@bytedance.com" },
+]
+description = "convert thrift to pyi"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+        # Trove classifiers
+        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+        'Intended Audience :: Developers',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+    ]
+
+[project.urls]
+"Homepage" = "https://github.com/pypa/sampleproject"
+"Bug Tracker" = "https://github.com/pypa/sampleproject/issues"
