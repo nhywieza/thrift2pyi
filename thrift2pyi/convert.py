@@ -58,6 +58,8 @@ class Thrift2pyi(object):
                 return "int"
             elif thrift_type in [TType.STRING, TType.UTF7]:
                 return "str"
+            elif thrift_type in [TType.BINARY]:
+                return "bytes"
             elif thrift_type in [TType.DOUBLE]:
                 return "float"
             elif thrift_type in [TType.BINARY]:
