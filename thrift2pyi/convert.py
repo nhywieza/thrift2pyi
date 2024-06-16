@@ -106,7 +106,7 @@ class Thrift2pyi(object):
         elif isinstance(v, string_types):
             return "'%s'" % v
         else:
-            raise Thrift2pyiException("%s do not support" % v)
+            raise Thrift2pyiException("%s do not support" % str(v))
 
     def _spec2params(self, default_spec, thrift_spec):
         default_dict = {}
