@@ -105,6 +105,8 @@ class Thrift2pyi(object):
             return str(v)
         elif isinstance(v, string_types):
             return "'%s'" % v
+        elif isinstance(v, tuple):
+            return self._2v(v[1])
         else:
             raise Thrift2pyiException("%s do not support" % v)
 
